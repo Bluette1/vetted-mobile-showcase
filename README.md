@@ -45,9 +45,24 @@ Vetted is a comprehensive mobile application designed for pet owners to manage t
    npx expo start
    ```
 
-## 📱 Portfolio Reference
+## 📓 Portfolio Highlights
 
-This project was built as a mobile extension of the [Vetted Web Platform](https://github.com/Bluette1/vetted). It demonstrates proficiency in cross-platform mobile development, native API integration (Notifications), and architectural patterns in React Native.
+This project demonstrates a high level of proficiency in modern mobile engineering:
+
+- **Full-Cycle Migration**: Successfully architected the transition from a React web application to a performance-optimized native mobile app.
+- **Native System Integration**: Leveraged `expo-notifications` for deep OS-level integration, delivering timely pet care reminders.
+- **Complex UI/UX**: Implemented a sophisticated navigation hierarchy using **Expo Router**, featuring nested tab and stack navigators.
+- **Data Visualization**: Integrated `react-native-chart-kit` for real-time health data rendering, ensuring medical metrics are accessible and actionable.
+- **Premium Design Implementation**: Translated a refined design system (using the **Nunito** font family and curated HSL color tokens) into a polished, responsive native interface.
+
+## 🏗 Architecture
+
+The app follows a structured, modular architecture:
+
+- **Context API Layer**: Global state management for Authentication and Pet data, ensuring a "single source of truth" across the app.
+- **Service Layer**: Decoupled API logic (`api.ts`) and Notification management (`notifications.ts`) for better testability and maintenance.
+- **Component Pattern**: Reusable UI primitives (Cards, Buttons) built on top of React Native's `StyleSheet` for high performance.
+- **File-Based Routing**: Clean, semantic routing structure following the latest Expo Router conventions.
 
 ---
 *Created by [Bluette1](https://github.com/Bluette1)*
