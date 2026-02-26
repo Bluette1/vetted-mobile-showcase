@@ -3,12 +3,28 @@ import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
 import { PetProvider } from '../src/contexts/PetContext';
 import { useEffect } from 'react';
 import { useRouter, useSegments } from 'expo-router';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Platform } from 'react-native';
+import { registerForPushNotificationsAsync } from '../src/services/notifications';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+    }),
+});
 
 function RootLayoutNav() {
     const { user, loading } = useAuth();
     const segments = useSegments();
     const router = useRouter();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+    }, []);
 
     useEffect(() => {
         if (loading) return;
