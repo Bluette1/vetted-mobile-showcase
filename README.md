@@ -22,7 +22,10 @@ Vetted is a comprehensive mobile application designed for pet owners to manage t
 
 ## 📸 Screenshots
 
-*(Screenshots coming soon)*
+<p align="center">
+  <img src="assets/showcase/dashboard.png" width="300" alt="Dashboard" />
+  <img src="assets/showcase/health.png" width="300" alt="Health Records" />
+</p>
 
 ## 🚀 Installation & Setup
 
