@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { usePets } from '../contexts/PetContext';
+import { Colors } from '../constants/Colors';
 
 const PetSwitcher = () => {
     const { pets, activePet, setActivePetId } = usePets();
@@ -37,33 +38,39 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     scrollContent: {
-        gap: 8,
+        gap: 10,
+        paddingRight: 20,
     },
     button: {
         paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingVertical: 10,
+        borderRadius: 25,
         borderWidth: 1,
         flexDirection: 'row',
         alignItems: 'center',
     },
     buttonActive: {
-        backgroundColor: '#000',
-        borderColor: '#000',
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 2,
     },
     buttonOutline: {
-        backgroundColor: '#fff',
-        borderColor: '#d1d5db',
+        backgroundColor: Colors.card,
+        borderColor: Colors.border,
     },
     text: {
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Nunito_700Bold',
     },
     textActive: {
         color: '#fff',
     },
     textOutline: {
-        color: '#374151',
+        color: Colors.foreground,
     },
 });
 

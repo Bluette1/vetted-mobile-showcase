@@ -6,6 +6,7 @@ import { Plus, Check, Clock, X, Bell } from 'lucide-react-native';
 import PetSwitcher from '../../src/components/PetSwitcher';
 import { Picker } from '@react-native-picker/picker';
 import { scheduleReminderNotification } from '../../src/services/notifications';
+import { Colors } from '../../src/constants/Colors';
 
 export default function RemindersScreen() {
     const { reminders, addReminder, updateReminder, activePet } = usePets();
@@ -60,7 +61,7 @@ export default function RemindersScreen() {
     const done = reminders.filter(r => r.completed);
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.header}>
                 <Text style={styles.title}>Reminders</Text>
                 <TouchableOpacity style={styles.addButton} onPress={() => setModalOpen(true)}>
@@ -72,7 +73,11 @@ export default function RemindersScreen() {
             <PetSwitcher />
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Upcoming</Text>
+                <View style={styles.sectionHeader}>
+                    <Bell size={18} color={Colors.mutedForeground} strokeWidth={2.5} />
+                    <Text style={styles.sectionTitle}>Upcoming</Text>
+                </View>
+
                 {pending.length === 0 ? (
                     <Card>
                         <CardContent>
@@ -83,7 +88,7 @@ export default function RemindersScreen() {
                     pending.map(r => (
                         <Card key={r.id} style={r.snoozed ? { opacity: 0.6 } : undefined}>
                             <CardContent>
-                                <View style={styles.reminderHeader}>
+                                <View style={styles.reminderItemHeader}>
                                     <View>
                                         <Text style={styles.reminderTitle}>{r.title}</Text>
                                         <Text style={styles.reminderTime}>{r.date} · {r.time} {r.recurring ? '🔄' : ''}</Text>
@@ -95,11 +100,11 @@ export default function RemindersScreen() {
 
                                 <View style={styles.actionRow}>
                                     <TouchableOpacity style={styles.doneButton} onPress={() => markDone(r.id)}>
-                                        <Check size={16} color="#fff" />
+                                        <Check size={16} color="#fff" strokeWidth={3} />
                                         <Text style={styles.doneButtonText}>Done</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={styles.snoozeButton} onPress={() => snooze(r.id)}>
-                                        <Clock size={16} color="#6b7280" />
+                                        <Clock size={16} color={Colors.foreground} />
                                         <Text style={styles.snoozeButtonText}>Snooze</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -115,7 +120,9 @@ export default function RemindersScreen() {
                     {done.map(r => (
                         <Card key={r.id} style={{ opacity: 0.6 }}>
                             <CardContent style={styles.doneContent}>
-                                <Check size={18} color="#059669" />
+                                <View style={styles.checkCircle}>
+                                    <Check size={14} color={Colors.success} strokeWidth={3} />
+                                </View>
                                 <View>
                                     <Text style={[styles.reminderTitle, { textDecorationLine: 'line-through' }]}>{r.title}</Text>
                                     <Text style={styles.reminderDate}>{r.date}</Text>
@@ -133,17 +140,18 @@ export default function RemindersScreen() {
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>New Reminder</Text>
                             <TouchableOpacity onPress={() => setModalOpen(false)}>
-                                <X size={24} color="#000" />
+                                <X size={24} color={Colors.foreground} />
                             </TouchableOpacity>
                         </View>
 
-                        <ScrollView style={styles.form}>
-                            <Text style={styles.label}>Title</Text>
+                        <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
+                            <Text style={styles.label}>What should we remind you about?</Text>
                             <TextInput
                                 style={styles.input}
                                 value={form.title}
                                 onChangeText={t => setForm(f => ({ ...f, title: t }))}
                                 placeholder="Give medication..."
+                                placeholderTextColor={Colors.mutedForeground}
                             />
 
                             <Text style={styles.label}>Type</Text>
@@ -158,27 +166,39 @@ export default function RemindersScreen() {
                                 </Picker>
                             </View>
 
-                            <Text style={styles.label}>Date</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={form.date}
-                                onChangeText={t => setForm(f => ({ ...f, date: t }))}
-                                placeholder="YYYY-MM-DD"
-                            />
-
-                            <Text style={styles.label}>Time</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={form.time}
-                                onChangeText={t => setForm(f => ({ ...f, time: t }))}
-                                placeholder="HH:MM"
-                            />
+                            <View style={styles.dateTimeGrid}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={styles.label}>Date</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={form.date}
+                                        onChangeText={t => setForm(f => ({ ...f, date: t }))}
+                                        placeholder="YYYY-MM-DD"
+                                        placeholderTextColor={Colors.mutedForeground}
+                                    />
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={styles.label}>Time</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={form.time}
+                                        onChangeText={t => setForm(f => ({ ...f, time: t }))}
+                                        placeholder="HH:MM"
+                                        placeholderTextColor={Colors.mutedForeground}
+                                    />
+                                </View>
+                            </View>
 
                             <View style={styles.switchRow}>
-                                <Text style={styles.label}>Recurring</Text>
+                                <View>
+                                    <Text style={[styles.label, { marginTop: 0 }]}>Recurring</Text>
+                                    <Text style={styles.switchSubtitle}>Repeat this reminder</Text>
+                                </View>
                                 <Switch
                                     value={form.recurring}
                                     onValueChange={v => setForm(f => ({ ...f, recurring: v }))}
+                                    trackColor={{ false: Colors.border, true: Colors.primary }}
+                                    thumbColor="#fff"
                                 />
                             </View>
 
@@ -199,184 +219,236 @@ export default function RemindersScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        padding: 16,
+        backgroundColor: Colors.background,
+    },
+    contentContainer: {
+        padding: 20,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20,
-        marginTop: 8,
+        marginBottom: 24,
     },
     title: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     addButton: {
-        backgroundColor: '#000',
+        backgroundColor: Colors.primary,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 8,
-        gap: 4,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        gap: 6,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 2,
     },
     addButtonText: {
         color: '#fff',
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Nunito_700Bold',
     },
     section: {
-        marginBottom: 24,
+        marginBottom: 28,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 14,
+        gap: 10,
     },
     sectionTitle: {
-        fontSize: 12,
-        fontWeight: '700',
-        color: '#6b7280',
+        fontSize: 13,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.mutedForeground,
         textTransform: 'uppercase',
-        letterSpacing: 1,
-        marginBottom: 12,
+        letterSpacing: 1.2,
     },
-    reminderHeader: {
+    reminderItemHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 16,
+        marginBottom: 20,
     },
     reminderTitle: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#111827',
+        fontSize: 16,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
     },
     reminderTime: {
-        fontSize: 13,
-        color: '#6b7280',
-        marginTop: 2,
+        fontSize: 14,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
+        marginTop: 4,
     },
     typeBadge: {
-        backgroundColor: '#f3f4f6',
-        paddingHorizontal: 8,
+        backgroundColor: Colors.secondary,
+        paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 12,
     },
     typeBadgeText: {
-        fontSize: 10,
-        fontWeight: '600',
-        color: '#4b5563',
+        fontSize: 11,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
         textTransform: 'capitalize',
     },
     actionRow: {
         flexDirection: 'row',
-        gap: 8,
+        gap: 10,
     },
     doneButton: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: Colors.primary,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-        borderRadius: 8,
-        gap: 6,
+        paddingVertical: 12,
+        borderRadius: 12,
+        gap: 8,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 2,
     },
     doneButtonText: {
         color: '#fff',
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Nunito_700Bold',
     },
     snoozeButton: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.card,
         borderWidth: 1,
-        borderColor: '#d1d5db',
+        borderColor: Colors.border,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-        borderRadius: 8,
-        gap: 6,
+        paddingVertical: 12,
+        borderRadius: 12,
+        gap: 8,
     },
     snoozeButtonText: {
-        color: '#374151',
+        color: Colors.foreground,
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Nunito_700Bold',
     },
     doneContent: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 14,
+    },
+    checkCircle: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: Colors.mint,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     reminderDate: {
         fontSize: 12,
-        color: '#9ca3af',
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
     },
     emptyText: {
         textAlign: 'center',
-        color: '#9ca3af',
+        color: Colors.mutedForeground,
+        fontFamily: 'Nunito_400Regular',
         fontStyle: 'italic',
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.6)',
         justifyContent: 'flex-end',
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        height: '80%',
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        height: '84%',
         padding: 24,
     },
     modalHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 24,
+        marginBottom: 30,
     },
     modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     form: {
         flex: 1,
     },
     label: {
         fontSize: 14,
-        fontWeight: '600',
-        color: '#374151',
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
         marginBottom: 8,
-        marginTop: 16,
+        marginTop: 18,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 8,
-        padding: 12,
+        borderColor: Colors.border,
+        borderRadius: 12,
+        padding: 14,
         fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        backgroundColor: Colors.background,
     },
     pickerContainer: {
         borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 8,
+        borderColor: Colors.border,
+        borderRadius: 12,
         overflow: 'hidden',
+        backgroundColor: Colors.background,
+    },
+    dateTimeGrid: {
+        flexDirection: 'row',
+        gap: 12,
     },
     switchRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 16,
+        marginTop: 24,
+        padding: 16,
+        backgroundColor: Colors.background,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: Colors.border,
+    },
+    switchSubtitle: {
+        fontSize: 12,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
+        marginTop: 2,
     },
     saveButton: {
-        backgroundColor: '#000',
-        padding: 16,
-        borderRadius: 8,
+        backgroundColor: Colors.primary,
+        padding: 18,
+        borderRadius: 12,
         alignItems: 'center',
-        marginTop: 32,
+        marginTop: 36,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
     },
     saveButtonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Nunito_700Bold',
     }
 });

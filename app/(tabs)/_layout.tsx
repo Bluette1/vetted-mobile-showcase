@@ -1,60 +1,72 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Home, PawPrint, HeartPulse, Bell, MoreHorizontal } from 'lucide-react-native';
+import { Colors } from '../../src/constants/Colors';
 
 export default function TabLayout() {
     return (
         <Tabs screenOptions={{
-            tabBarActiveTintColor: '#3b82f6',
-            tabBarInactiveTintColor: '#6b7280',
+            tabBarActiveTintColor: Colors.primary,
+            tabBarInactiveTintColor: Colors.mutedForeground,
             tabBarStyle: {
                 borderTopWidth: 1,
-                borderTopColor: '#e5e7eb',
-                height: 60,
-                paddingBottom: 8,
-                paddingTop: 8,
+                borderTopColor: Colors.border,
+                height: 65,
+                paddingBottom: 10,
+                paddingTop: 10,
+                backgroundColor: '#fff',
+            },
+            tabBarLabelStyle: {
+                fontFamily: 'Nunito_700Bold',
+                fontSize: 11,
             },
             headerShown: true,
             headerStyle: {
                 backgroundColor: '#fff',
+                elevation: 0,
+                shadowOpacity: 0,
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.border,
             },
             headerTitleStyle: {
-                fontWeight: 'bold',
+                fontFamily: 'Nunito_800ExtraBold',
+                fontSize: 18,
+                color: Colors.foreground,
             },
         }}>
             <Tabs.Screen
                 name="index"
                 options={{
                     title: 'Home',
-                    tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <Home size={22} color={color} strokeWidth={2.5} />,
                 }}
             />
             <Tabs.Screen
                 name="pets"
                 options={{
                     title: 'Pets',
-                    tabBarIcon: ({ color }) => <PawPrint size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <PawPrint size={22} color={color} strokeWidth={2.5} />,
                 }}
             />
             <Tabs.Screen
                 name="health"
                 options={{
                     title: 'Health',
-                    tabBarIcon: ({ color }) => <HeartPulse size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <HeartPulse size={22} color={color} strokeWidth={2.5} />,
                 }}
             />
             <Tabs.Screen
                 name="reminders"
                 options={{
                     title: 'Reminders',
-                    tabBarIcon: ({ color }) => <Bell size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <Bell size={22} color={color} strokeWidth={2.5} />,
                 }}
             />
             <Tabs.Screen
                 name="more"
                 options={{
                     title: 'More',
-                    tabBarIcon: ({ color }) => <MoreHorizontal size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <MoreHorizontal size={22} color={color} strokeWidth={2.5} />,
                 }}
             />
         </Tabs>

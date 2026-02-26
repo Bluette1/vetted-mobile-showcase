@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
+import { Colors } from '../constants/Colors';
 
 interface CardProps {
     children: React.ReactNode;
-    style?: ViewStyle;
+    style?: ViewStyle | ViewStyle[];
 }
 
 export const Card = ({ children, style }: CardProps) => (
@@ -20,16 +21,16 @@ export const CardContent = ({ children, style }: CardProps) => (
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
+        backgroundColor: Colors.card,
+        borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#e5e7eb',
+        borderColor: Colors.border,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
-        shadowRadius: 2,
+        shadowRadius: 4,
         elevation: 2,
-        marginBottom: 12,
+        marginBottom: 16,
         overflow: 'hidden',
     },
     content: {

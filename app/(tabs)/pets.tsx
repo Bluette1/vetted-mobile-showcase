@@ -6,6 +6,7 @@ import { Plus, Edit2, X } from 'lucide-react-native';
 import PetSwitcher from '../../src/components/PetSwitcher';
 import { LineChart } from 'react-native-chart-kit';
 import { Picker } from '@react-native-picker/picker';
+import { Colors } from '../../src/constants/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -60,13 +61,13 @@ export default function PetsScreen() {
         labels: (activePet?.weightHistory || []).slice(-5).map(h => h.date.split('-').slice(1).join('/')),
         datasets: [{
             data: (activePet?.weightHistory || []).slice(-5).map(h => h.weight),
-            color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
-            strokeWidth: 2
+            color: (opacity = 1) => Colors.primary,
+            strokeWidth: 3
         }],
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.header}>
                 <Text style={styles.title}>My Pets</Text>
                 <TouchableOpacity style={styles.addButton} onPress={openAdd}>
@@ -83,14 +84,18 @@ export default function PetsScreen() {
                         <CardContent>
                             <View style={styles.petItemHeader}>
                                 <View style={styles.petInfoMain}>
-                                    <Text style={styles.avatar}>{activePet.avatar}</Text>
+                                    <View style={styles.avatarCircle}>
+                                        <Text style={styles.avatar}>{activePet.avatar}</Text>
+                                    </View>
                                     <View>
                                         <Text style={styles.petName}>{activePet.name}</Text>
                                         <Text style={styles.petSubtitle}>{activePet.species} · {activePet.breed}</Text>
                                     </View>
                                 </View>
                                 <TouchableOpacity style={styles.editIcon} onPress={openEdit}>
-                                    <Edit2 size={16} color="#6b7280" />
+                                    <View style={styles.editIconCircle}>
+                                        <Edit2 size={16} color={Colors.mutedForeground} />
+                                    </View>
                                 </TouchableOpacity>
                             </View>
 
@@ -118,20 +123,21 @@ export default function PetsScreen() {
                     {activePet.weightHistory && activePet.weightHistory.length > 0 && (
                         <Card>
                             <CardContent>
-                                <Text style={styles.cardHeader}>Weight History</Text>
+                                <Text style={styles.cardHeader}>Weight History (kg)</Text>
                                 <LineChart
                                     data={chartData}
-                                    width={screenWidth - 64}
+                                    width={screenWidth - 72}
                                     height={180}
                                     chartConfig={{
                                         backgroundColor: '#fff',
                                         backgroundGradientFrom: '#fff',
                                         backgroundGradientTo: '#fff',
                                         decimalPlaces: 1,
-                                        color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
-                                        labelColor: (opacity = 1) => `rgba(107, 114, 128, ${opacity})`,
+                                        color: (opacity = 1) => Colors.primary,
+                                        labelColor: (opacity = 1) => Colors.mutedForeground,
                                         style: { borderRadius: 16 },
-                                        propsForDots: { r: "4", strokeWidth: "2", stroke: "#3b82f6" }
+                                        propsForDots: { r: "5", strokeWidth: "2", stroke: Colors.primary },
+                                        propsForBackgroundLines: { stroke: Colors.border, strokeDasharray: "" }
                                     }}
                                     bezier
                                     style={styles.chart}
@@ -149,13 +155,13 @@ export default function PetsScreen() {
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{editMode ? 'Edit Pet' : 'Add New Pet'}</Text>
                             <TouchableOpacity onPress={() => setModalOpen(false)}>
-                                <X size={24} color="#000" />
+                                <X size={24} color={Colors.foreground} />
                             </TouchableOpacity>
                         </View>
 
-                        <ScrollView style={styles.form}>
+                        <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
                             <Text style={styles.label}>Name</Text>
-                            <TextInput style={styles.input} value={form.name} onChangeText={t => setForm(f => ({ ...f, name: t }))} placeholder="Pet Name" />
+                            <TextInput style={styles.input} value={form.name} onChangeText={t => setForm(f => ({ ...f, name: t }))} placeholder="Pet Name" placeholderTextColor={Colors.mutedForeground} />
 
                             <Text style={styles.label}>Species</Text>
                             <View style={styles.pickerContainer}>
@@ -169,19 +175,19 @@ export default function PetsScreen() {
                             </View>
 
                             <Text style={styles.label}>Breed</Text>
-                            <TextInput style={styles.input} value={form.breed} onChangeText={t => setForm(f => ({ ...f, breed: t }))} placeholder="Golden Retriever" />
+                            <TextInput style={styles.input} value={form.breed} onChangeText={t => setForm(f => ({ ...f, breed: t }))} placeholder="Golden Retriever" placeholderTextColor={Colors.mutedForeground} />
 
                             <Text style={styles.label}>Date of Birth</Text>
-                            <TextInput style={styles.input} value={form.dob} onChangeText={t => setForm(f => ({ ...f, dob: t }))} placeholder="2022-05-15" />
+                            <TextInput style={styles.input} value={form.dob} onChangeText={t => setForm(f => ({ ...f, dob: t }))} placeholder="2022-05-15" placeholderTextColor={Colors.mutedForeground} />
 
                             <Text style={styles.label}>Weight (kg)</Text>
-                            <TextInput style={styles.input} value={form.weight} onChangeText={t => setForm(f => ({ ...f, weight: t }))} keyboardType="numeric" placeholder="12.5" />
+                            <TextInput style={styles.input} value={form.weight} onChangeText={t => setForm(f => ({ ...f, weight: t }))} keyboardType="numeric" placeholder="12.5" placeholderTextColor={Colors.mutedForeground} />
 
                             <Text style={styles.label}>Notes</Text>
-                            <TextInput style={[styles.input, { height: 80 }]} value={form.notes} onChangeText={t => setForm(f => ({ ...f, notes: t }))} multiline placeholder="Favorite treat is apple..." />
+                            <TextInput style={[styles.input, { height: 100 }]} value={form.notes} onChangeText={t => setForm(f => ({ ...f, notes: t }))} multiline placeholder="Favorite treat is apple..." placeholderTextColor={Colors.mutedForeground} textAlignVertical="top" />
 
                             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                                <Text style={styles.saveButtonText}>Save</Text>
+                                <Text style={styles.saveButtonText}>Save Details</Text>
                             </TouchableOpacity>
                             <View style={{ height: 40 }} />
                         </ScrollView>
@@ -197,159 +203,187 @@ export default function PetsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        padding: 16,
+        backgroundColor: Colors.background,
+    },
+    contentContainer: {
+        padding: 20,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20,
-        marginTop: 8,
+        marginBottom: 24,
     },
     title: {
         fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000',
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     addButton: {
-        backgroundColor: '#000',
+        backgroundColor: Colors.primary,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 8,
-        gap: 4,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 12,
+        gap: 6,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 2,
     },
     addButtonText: {
         color: '#fff',
         fontSize: 14,
-        fontWeight: '600',
+        fontFamily: 'Nunito_700Bold',
     },
     petItemHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 16,
+        marginBottom: 20,
     },
     petInfoMain: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 16,
     },
+    avatarCircle: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: Colors.muted,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     avatar: {
-        fontSize: 40,
+        fontSize: 32,
     },
     petName: {
         fontSize: 20,
-        fontWeight: 'bold',
-        color: '#111827',
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     petSubtitle: {
-        fontSize: 14,
-        color: '#6b7280',
+        fontSize: 15,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         textTransform: 'capitalize',
     },
-    editIcon: {
-        padding: 8,
+    editIconCircle: {
+        padding: 10,
+        borderRadius: 20,
+        backgroundColor: Colors.muted,
     },
     statsGrid: {
         flexDirection: 'row',
-        gap: 8,
+        gap: 10,
     },
     statBox: {
         flex: 1,
-        backgroundColor: '#f9fafb',
-        padding: 12,
-        borderRadius: 8,
+        backgroundColor: Colors.secondary,
+        padding: 14,
+        borderRadius: 12,
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#f3f4f6',
     },
     statLabel: {
         fontSize: 11,
-        color: '#6b7280',
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
+        opacity: 0.6,
         marginBottom: 4,
+        textTransform: 'uppercase',
     },
     statValue: {
-        fontSize: 14,
-        fontWeight: '700',
-        color: '#1f2937',
+        fontSize: 15,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     notes: {
         fontSize: 14,
-        color: '#6b7280',
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         fontStyle: 'italic',
-        marginTop: 16,
+        marginTop: 20,
         borderTopWidth: 1,
-        borderTopColor: '#f3f4f6',
-        paddingTop: 12,
+        borderTopColor: Colors.border,
+        paddingTop: 16,
     },
     cardHeader: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#111827',
+        fontSize: 16,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
         marginBottom: 16,
     },
     chart: {
-        marginVertical: 8,
+        marginLeft: -16,
         borderRadius: 16,
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.6)',
         justifyContent: 'flex-end',
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        height: '90%',
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        height: '92%',
         padding: 24,
     },
     modalHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 24,
+        marginBottom: 30,
     },
     modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     form: {
         flex: 1,
     },
     label: {
         fontSize: 14,
-        fontWeight: '600',
-        color: '#374151',
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
         marginBottom: 8,
-        marginTop: 16,
+        marginTop: 18,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 8,
-        padding: 12,
+        borderColor: Colors.border,
+        borderRadius: 12,
+        padding: 14,
         fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        backgroundColor: Colors.background,
     },
     pickerContainer: {
         borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 8,
+        borderColor: Colors.border,
+        borderRadius: 12,
         overflow: 'hidden',
+        backgroundColor: Colors.background,
     },
     saveButton: {
-        backgroundColor: '#000',
-        padding: 16,
-        borderRadius: 8,
+        backgroundColor: Colors.primary,
+        padding: 18,
+        borderRadius: 12,
         alignItems: 'center',
-        marginTop: 32,
+        marginTop: 36,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
     },
     saveButtonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Nunito_700Bold',
     }
 });

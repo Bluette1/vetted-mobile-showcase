@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { Colors } from '../constants/Colors';
 
 const LoginScreen = ({ onSignupLink }: { onSignupLink: () => void }) => {
     const { login } = useAuth();
@@ -28,10 +29,11 @@ const LoginScreen = ({ onSignupLink }: { onSignupLink: () => void }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                {/* Placeholder for logo - we'll add the stethoscope-paw logo later */}
-                <View style={styles.logoPlaceholder}>
-                    <Text style={{ fontSize: 40 }}>🐾</Text>
-                </View>
+                <Image
+                    source={require('../assets/logo.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
                 <Text style={styles.title}>Welcome back</Text>
                 <Text style={styles.subtitle}>Sign in to care for your pets</Text>
             </View>
@@ -47,6 +49,7 @@ const LoginScreen = ({ onSignupLink }: { onSignupLink: () => void }) => {
                     onChangeText={setEmail}
                     autoCapitalize="none"
                     keyboardType="email-address"
+                    placeholderTextColor={Colors.mutedForeground}
                 />
 
                 <Text style={styles.label}>Password</Text>
@@ -56,6 +59,7 @@ const LoginScreen = ({ onSignupLink }: { onSignupLink: () => void }) => {
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry
+                    placeholderTextColor={Colors.mutedForeground}
                 />
 
                 <TouchableOpacity
@@ -85,29 +89,26 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background,
     },
     header: {
         alignItems: 'center',
         marginBottom: 40,
     },
-    logoPlaceholder: {
-        width: 80,
-        height: 80,
-        borderRadius: 20,
-        backgroundColor: '#f3f4f6',
-        alignItems: 'center',
-        justifyContent: 'center',
+    logo: {
+        width: 100,
+        height: 100,
         marginBottom: 16,
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000',
+        fontSize: 28,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     subtitle: {
-        fontSize: 14,
-        color: '#6b7280',
+        fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         marginTop: 4,
     },
     form: {
@@ -115,24 +116,31 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 14,
-        fontWeight: '600',
-        color: '#374151',
-        marginBottom: 4,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
+        marginBottom: 8,
         marginTop: 16,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 8,
-        padding: 12,
+        borderColor: Colors.border,
+        borderRadius: 12,
+        padding: 14,
         fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        backgroundColor: Colors.card,
     },
     button: {
-        backgroundColor: '#000',
-        borderRadius: 8,
-        padding: 16,
+        backgroundColor: Colors.primary,
+        borderRadius: 12,
+        padding: 18,
         alignItems: 'center',
-        marginTop: 24,
+        marginTop: 32,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
     },
     buttonDisabled: {
         opacity: 0.7,
@@ -140,22 +148,24 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Nunito_700Bold',
     },
     errorText: {
-        color: '#ef4444',
+        color: Colors.destructive,
         fontSize: 14,
+        fontFamily: 'Nunito_600SemiBold',
         marginBottom: 16,
     },
     footerText: {
         textAlign: 'center',
         marginTop: 24,
         fontSize: 14,
-        color: '#6b7280',
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
     },
     linkText: {
-        color: '#3b82f6',
-        fontWeight: 'bold',
+        color: Colors.primary,
+        fontFamily: 'Nunito_700Bold',
     },
 });
 

@@ -1,11 +1,21 @@
 import { Slot, Stack } from 'expo-router';
 import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
 import { PetProvider } from '../src/contexts/PetContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSegments } from 'expo-router';
-import { ActivityIndicator, View, Platform } from 'react-native';
+import { ActivityIndicator, View, Platform, Text } from 'react-native';
 import { registerForPushNotificationsAsync } from '../src/services/notifications';
 import * as Notifications from 'expo-notifications';
+import * as SplashScreen from 'expo-splash-screen';
+import {
+    useFonts,
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold
+} from '@expo-google-fonts/nunito';
+
+SplashScreen.preventAutoHideAsync();
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -18,16 +28,29 @@ Notifications.setNotificationHandler({
 });
 
 function RootLayoutNav() {
-    const { user, loading } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const segments = useSegments();
     const router = useRouter();
+
+    const [fontsLoaded, fontError] = useFonts({
+        Nunito_400Regular,
+        Nunito_600SemiBold,
+        Nunito_700Bold,
+        Nunito_800ExtraBold,
+    });
 
     useEffect(() => {
         registerForPushNotificationsAsync();
     }, []);
 
     useEffect(() => {
-        if (loading) return;
+        if (fontsLoaded || fontError) {
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded, fontError]);
+
+    useEffect(() => {
+        if (authLoading || !fontsLoaded) return;
 
         const inAuthGroup = segments[0] === '(tabs)';
 
@@ -38,9 +61,9 @@ function RootLayoutNav() {
             // Redirect to home if authenticated and trying to access login
             router.replace('/(tabs)');
         }
-    }, [user, loading, segments]);
+    }, [user, authLoading, segments, fontsLoaded]);
 
-    if (loading) {
+    if (authLoading || !fontsLoaded) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" color="#000" />

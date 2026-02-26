@@ -5,6 +5,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import { Card, CardContent } from '../../src/components/Card';
 import { Bell, Heart, TrendingUp } from 'lucide-react-native';
 import PetSwitcher from '../../src/components/PetSwitcher';
+import { Colors } from '../../src/constants/Colors';
 
 export default function HomeScreen() {
     const { user } = useAuth();
@@ -14,7 +15,6 @@ export default function HomeScreen() {
     const upcomingReminders = reminders.filter(r => !r.completed).slice(0, 3);
 
     const onRefresh = React.useCallback(() => {
-        // In a real app, you'd trigger a reload here
         setRefreshing(true);
         setTimeout(() => setRefreshing(false), 1000);
     }, []);
@@ -22,8 +22,9 @@ export default function HomeScreen() {
     return (
         <ScrollView
             style={styles.container}
+            contentContainerStyle={styles.contentContainer}
             refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[Colors.primary]} />
             }
         >
             <View style={styles.header}>
@@ -38,7 +39,7 @@ export default function HomeScreen() {
                     {/* Upcoming Reminders */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
-                            <Bell size={18} color="#6b7280" />
+                            <Bell size={18} color={Colors.mutedForeground} strokeWidth={2.5} />
                             <Text style={styles.sectionTitle}>Upcoming</Text>
                         </View>
 
@@ -68,15 +69,15 @@ export default function HomeScreen() {
                     {/* Insights */}
                     <View style={styles.section}>
                         <View style={styles.sectionHeader}>
-                            <TrendingUp size={18} color="#6b7280" />
+                            <TrendingUp size={18} color={Colors.mutedForeground} strokeWidth={2.5} />
                             <Text style={styles.sectionTitle}>Insights</Text>
                         </View>
 
                         {insights.map(insight => (
-                            <Card key={insight.id} style={{ borderLeftWidth: 4, borderLeftColor: insight.type === 'gentle_alert' ? '#fde68a' : '#6ee7b7' }}>
+                            <Card key={insight.id} style={{ borderLeftWidth: 6, borderLeftColor: insight.type === 'gentle_alert' ? Colors.peach : Colors.mint }}>
                                 <CardContent>
                                     <Text style={styles.insightText}>
-                                        <Text style={{ fontSize: 18 }}>{insight.icon}</Text> {insight.message}
+                                        <Text style={{ fontSize: 20 }}>{insight.icon}</Text> {insight.message}
                                     </Text>
                                     <Text style={styles.insightDisclaimer}>
                                         💡 These insights are based on patterns, not diagnoses. Always consult your vet.
@@ -89,7 +90,9 @@ export default function HomeScreen() {
                     {/* Quick wellness prompt */}
                     <Card style={styles.wellnessCard}>
                         <CardContent style={styles.wellnessContent}>
-                            <Heart size={20} color="#3b82f6" />
+                            <View style={styles.heartIconCircle}>
+                                <Heart size={20} color={Colors.primary} fill={Colors.primary} />
+                            </View>
                             <View>
                                 <Text style={styles.wellnessTitle}>Daily wellness check-in</Text>
                                 <Text style={styles.wellnessSubtitle}>How is {activePet.name} feeling today?</Text>
@@ -103,7 +106,6 @@ export default function HomeScreen() {
                 </View>
             )}
 
-            {/* Bottom padding for ScrollView */}
             <View style={{ height: 40 }} />
         </ScrollView>
     );
@@ -112,38 +114,40 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        padding: 16,
+        backgroundColor: Colors.background,
+    },
+    contentContainer: {
+        padding: 20,
     },
     header: {
         marginBottom: 24,
-        marginTop: 8,
     },
     greeting: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#000',
+        fontSize: 26,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.foreground,
     },
     subtitle: {
-        fontSize: 14,
-        color: '#6b7280',
+        fontSize: 16,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         marginTop: 4,
     },
     section: {
-        marginBottom: 24,
+        marginBottom: 28,
     },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 12,
-        gap: 8,
+        marginBottom: 14,
+        gap: 10,
     },
     sectionTitle: {
-        fontSize: 12,
-        fontWeight: '700',
-        color: '#6b7280',
+        fontSize: 13,
+        fontFamily: 'Nunito_800ExtraBold',
+        color: Colors.mutedForeground,
         textTransform: 'uppercase',
-        letterSpacing: 1,
+        letterSpacing: 1.2,
     },
     reminderContent: {
         flexDirection: 'row',
@@ -151,65 +155,81 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     reminderTitle: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: '#1f2937',
+        fontSize: 16,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
     },
     reminderSubtitle: {
-        fontSize: 12,
-        color: '#6b7280',
+        fontSize: 13,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         marginTop: 2,
     },
     badge: {
-        backgroundColor: '#f3f4f6',
-        paddingHorizontal: 8,
+        backgroundColor: Colors.secondary,
+        paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 12,
     },
     badgeText: {
-        fontSize: 10,
-        fontWeight: '600',
-        color: '#4b5563',
+        fontSize: 11,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
+        textTransform: 'capitalize',
     },
     insightText: {
-        fontSize: 14,
-        color: '#1f2937',
-        lineHeight: 20,
+        fontSize: 15,
+        fontFamily: 'Nunito_600SemiBold',
+        color: Colors.foreground,
+        lineHeight: 22,
     },
     insightDisclaimer: {
-        fontSize: 11,
-        color: '#9ca3af',
+        fontSize: 12,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.mutedForeground,
         fontStyle: 'italic',
-        marginTop: 8,
+        marginTop: 10,
     },
     wellnessCard: {
-        backgroundColor: '#eff6ff',
-        borderColor: '#bfdbfe',
+        backgroundColor: Colors.secondary,
+        borderColor: Colors.secondary,
+        borderWidth: 0,
     },
     wellnessContent: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 14,
+    },
+    heartIconCircle: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     wellnessTitle: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#1e40af',
+        fontSize: 15,
+        fontFamily: 'Nunito_700Bold',
+        color: Colors.foreground,
     },
     wellnessSubtitle: {
-        fontSize: 12,
-        color: '#3b82f6',
+        fontSize: 13,
+        fontFamily: 'Nunito_400Regular',
+        color: Colors.foreground,
+        opacity: 0.8,
     },
     emptyText: {
         textAlign: 'center',
-        color: '#9ca3af',
-        fontSize: 14,
+        color: Colors.mutedForeground,
+        fontSize: 15,
+        fontFamily: 'Nunito_400Regular',
         fontStyle: 'italic',
     },
     centered: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 40,
+        marginTop: 60,
     }
 });
